@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HealthApplication {
 
     public static void main(String[] args) {
+        System.out.println("泰裤辣！！");
         SpringApplication.run(HealthApplication.class, args);
     }
 
