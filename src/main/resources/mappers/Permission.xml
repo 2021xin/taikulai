@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.learn.health.mapper.PermissionManner">
+    <resultMap id="getAllPermissionMap" type="Permission">
+        <id column="id" property="id" />
+        <result column="pattern" property="pattern" />
+        <collection property="roles"
+                    ofType="Role"
+                    column="id"
+                    select="com.learn.health.mapper.RoleManner.findRoleByPermissionId" />
+    </resultMap>
+    <select id="getAllPermission" parameterType="Long" resultMap="getAllPermissionMap">
+        select id,pattern from permission
+    </select>
+</mapper>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>体检预约</title>
+    <base href="/">
+    <meta name="description" content="体检预约">
+    <meta name="keywords" content="体检预约">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <!--引入vue相应文件-->
+    <script src="/js/vue.js"></script>
+    <!-- 引入ElementUI样式 -->
+    <link rel="stylesheet" href="/plugins/elementui/index.css">
+    <!-- 引入ElementUI组件库 -->
+    <script src="/plugins/elementui/index.js"></script>
+    <link rel="stylesheet" href="/plugins/font-awesome/css/font-awesome.min(1).css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/scrollbar.css">
+    <script src="/js/axios-0.18.0.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/scrollbar.css">
+</head>
+<body class="hold-transition">
+<div id="app">
+    <div class="content-header">
+        <h1>体检预约<small>体检预约</small></h1>
+        <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>体检预约</el-breadcrumb-item>
+            <el-breadcrumb-item>体检预约</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="app-container">
+        <div class="box">
+            <el-row :gutter="10" class="row">
+                <el-col :span="8" v-for="(item, index) in setmeals" :key="index">
+                    <el-card class="card_top" :body-style="{ padding: '1px' }" style="margin-left: 10px"
+                             style="height: 500px; width: 500px;">
+                        <img :src="'http://rmmn33n1g.hn-bkt.clouddn.com/' + item.img" :alt="item.name"
+                             style="height: 300px; width: 100%;"/>
+                        <div style="padding: 14px;">
+                            <span>{{ item.name }}</span>
+                            <div class="bottom clearfix">
+                                <p>性别：{{ item.sex == '0' ? '不限' : item.sex == '1' ? '男':'女' }}</p>
+                                <p>年龄：{{ item.age }}</p>
+                                <p>描述：{{ item.remark }}</p>
+                                <el-button type="primary" @click="toReservation(item)">点击预约</el-button>
+                            </div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+            <div class="pagination-container">
+                <el-pagination
+                        class="pagiantion"
+                        @current-change="handleCurrentChange"
+                        :current-page="pagination.currentPage"
+                        :page-size="pagination.pageSize"
+                        layout="total, prev, pager, next, jumper"
+                        :total="pagination.total">
+                </el-pagination>
+            </div>
+
+            <!-- 预约标签弹层 -->
+            <div class="add-form">
+                <el-dialog :title="title" :visible.sync="dialogFormVisible">
+                    <el-form :model="formData" :rules="dataRules" ref="formData" label-position="right"
+                             label-width="100px">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="用户名">
+                                    {{ username }}
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="预约类型" prop="orderType">
+                                    <el-select v-model="formData.orderType" placeholder="选择预约类型">
+                                        <el-option label="电话预约" value="电话预约"></el-option>
+                                        <el-option label="微信预约" value="微信预约"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="预约时间" prop="orderDate">
+                                    <el-date-picker v-model.number="formData.orderDate" type="date"
+                                                    placeholder="选择日期时间"></el-date-picker>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible = false">取消</el-button>
+                        <el-button type="primary" @click="reservation('formData')">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+
+            <!-- 预约标签弹层 -->
+            <div class="add-form">
+                <el-dialog title="完善信息" :visible="dialogInfoFormVisible">
+                    <el-form :model="formData" :rules="dataRules" ref="formData" label-position="right"
+                             label-width="100px">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="用户名">
+                                    {{ username }}
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="性别" prop="sex">
+                                    <el-select v-model="formData.sex" placeholder="选择性别">
+                                        <el-option label="男" value="1"></el-option>
+                                        <el-option label="女" value="2"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="身份证" prop="idCard">
+                                    <el-input v-model="formData.idCard"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="电话号码" prop="telephoneNumber">
+                                    <el-input v-model="formData.telephoneNumber"></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="improveInformation('formData')">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+        </div>
+
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var vue = new Vue({
+        el: "#app",
+        data() {
+            return {
+                setmeals: [],
+                title: null,
+                username: null,
+                pagination: {//分页相关模型数据
+                    currentPage: 1,//当前页码
+                    pageSize: 6,//每页显示的记录数
+                    total: 0,//总记录数
+                    queryString: null//查询条件
+                },
+                dialogFormVisible: false,
+                dialogInfoFormVisible: false,
+                formData: {
+                    orderDate: "",
+                    sex: "",
+                    orderType: "",
+                    setmealId: "",
+                    telephoneNumber: "",
+                    idCard: ""
+                },
+                dataRules: {
+                    sex: [
+                        {required: true, message: '性别不能为空！', trigger: 'blur'}
+                    ],
+                    orderType: [
+                        {required: true, message: '预约类型不能为空！', trigger: 'blur'}
+                    ],
+                    orderDate: [
+                        {required: true, message: '请选择时间！', trigger: 'blur'}
+                    ],
+                    telephoneNumber: [
+                        {required: true, message: '电话号码不能为空！', trigger: 'blur'},
+                        {min: 11, max: 11, message: '电话号码长度为11', trigger: 'blur'}
+                    ],
+                    idCard: [
+                        {required: true, message: '身份证不能为空！', trigger: 'blur'},
+                        {min: 18, max: 18, message: '身份证长度为18', trigger: 'blur'}
+                    ]
+                }
+            }
+        },
+        created() {
+            this.getSetmeal();
+            axios.get("/user/getUsername").then((response) => {
+                if (response.data.flag) {
+                    this.username = response.data.data;
+                }
+            });
+            axios.get("/order/isMember").then((response) => {
+                if (!response.data.flag) {
+                    this.dialogInfoFormVisible = true;
+                }
+            });
+        },
+        methods: {
+            getSetmeal() {
+                // 发送ajax请求，分装页码，每页记录数，查询条件等
+                var param = {
+                    currentPage: this.pagination.currentPage,
+                    pageSize: this.pagination.pageSize,
+                    queryString: this.pagination.queryString
+                }
+                axios.post("/setmeal/findPage", param).then((response) => {
+                    this.pagination.total = response.data.total;
+                    this.setmeals = response.data.rows;
+                });
+            },
+            //切换页码
+            handleCurrentChange(currentPage) {
+                // 当点击跳转页面时
+                this.pagination.currentPage = currentPage;
+                // 执行分页方法
+                this.getSetmeal();
+            },
+            reservation(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post("/order/reservation", this.formData).then((response) => {
+                            // 执行成功
+                            if (response.data.flag) {
+                                // 预约成功
+                                this.$message({
+                                    message: response.data.message,
+                                    type: "success"
+                                });
+                            } else {
+                                // 预约失败
+                                this.$message.error(response.data.message);
+                            }
+                        });
+                        this.dialogFormVisible = false;
+                    }
+                })
+            },
+            toReservation(setmeal) {
+                this.dialogFormVisible = true;
+                this.formData.setmealId = setmeal.id;
+                this.title = setmeal.name;
+            },
+            improveInformation(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post("/order/improveInformation", this.formData).then((response) => {
+                            // 执行成功
+                            if (response.data.flag) {
+                                // 预约成功
+                                this.$message({
+                                    message: response.data.message,
+                                    type: "success"
+                                });
+                            } else {
+                                // 预约失败
+                                this.$message.error(response.data.message);
+                                return false;
+                            }
+                        });
+                        this.dialogInfoFormVisible = false;
+                    }
+                });
+            }
+        }
+    })
+</script>
+<style scoped>
+    .card_top {
+        border-bottom-width: 10px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+        transition: all 0.5s;
+    }
+
+    .card_top {
+        height: 88%;
+        width: 90%;
+        margin-top: 10px;
+    }
+
+    .card_top:hover {
+        box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+        /* 鼠标悬浮时盒子出现的阴影 */
+        transform: translate(0, -10px);
+        /* 鼠标悬浮时盒子上移10px */
+    }
+</style>
+</html>

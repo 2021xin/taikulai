@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.learn.health.mapper.SetMealManner">
+    <!--多对多查询-->
+    <resultMap id="setmealMap" type="Setmeal">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="price" property="price"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+        <result column="img" property="img"/>
+    </resultMap>
+    <resultMap id="findSetmealByIdMap" type="Setmeal" extends="setmealMap">
+<!--        多对多映射-->
+        <collection property="checkGroups"
+                    ofType="CheckGroup"
+                    select="com.health.manner.CheckGroupManner.findCheckGroupById"
+                    column="id" />
+<!--        这里的id指的是Setmeal这个类的id-->
+    </resultMap>
+
+    <insert id="addSerMeal" parameterType="Setmeal">
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into t_setmeal
+        values(null,#{name},#{code},#{helpCode},#{sex},#{age},#{price},#{remark},#{attention},#{img})
+    </insert>
+    <insert id="addSetmealCheckgroup">
+        insert into t_setmeal_checkgroup
+        <foreach collection="checkgroupIds" item="checkgroupId" separator="," open="values">
+            (#{setmealId},#{checkgroupId})
+        </foreach>
+    </insert>
+    <!--查询指定内容的记录记录-->
+    <select id="queryContain" parameterType="String" resultType="Setmeal">
+        select id,name,code,helpCode,sex,age,price,remark,attention,img from t_setmeal
+        <if test="value != null and value.length > 0">
+            where code = #{value} or name = #{value} or helpCode = #{value}
+        </if>
+    </select>
+    <!--获取套餐-->
+    <select id="getSetmeal" resultType="Setmeal">
+        select id,name,code,helpCode,sex,age,price,remark,attention,img from t_setmeal
+    </select>
+    <!--根据指定id查询到Setmeal-->
+    <select id="findById" parameterType="Integer" resultMap="findSetmealByIdMap">
+        select id,name,code,helpCode,sex,age,price,remark,attention,img from t_setmeal where id = #{id}
+    </select>
+    <!--查询套餐名及其预约数量-->
+    <select id="findSetmealCount" resultType="Map">
+        select s.name,count(o.id) as value from t_order o,t_setmeal s where o.setmeal_id = s.id group by s.name
+    </select>
+    <!--清除指定套餐id与检查组的关联关系-->
+    <delete id="clearAssociation" parameterType="Integer">
+        delete from t_setmeal_checkgroup where setmeal_id = ${id}
+    </delete>
+    <!--根据id删除套餐-->
+    <delete id="deleteSetMeal" parameterType="Integer">
+        delete from t_setmeal where id = ${id}
+    </delete>
+</mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.learn.health.mapper.CheckGroupManner">
+    <!--多对多查询-->
+    <resultMap id="checkGroupMap" type="CheckGroup">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+    </resultMap>
+    <resultMap id="findCheckGroupByIdMap" type="CheckGroup" extends="checkGroupMap">
+        <collection property="checkItems"
+                    ofType="CheckItem"
+                    select="com.health.manner.CheckItemManner.findCheckItemById"
+                    column="id"/>
+    </resultMap>
+
+    <!--向t_checkgroup表插入数据-->
+    <insert id="addCheckGroup" parameterType="CheckGroup">
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+                select LAST_INSERT_ID()
+        </selectKey>
+        insert into t_checkgroup
+        values(null,#{code},#{name},#{helpCode},#{sex},#{remark},#{attention})
+    </insert>
+    <!--向t_checkgroup_checkitem表插入多对多的关系-->
+    <insert id="addCheckGroupAndCheckItem">
+        insert into t_checkgroup_checkitem
+        <foreach collection="checkitemIds" item="checkitemId" separator="," open="values">
+            (#{checkGroupId},#{checkitemId})
+        </foreach>
+    </insert>
+    <!--查询指定内容的记录记录-->
+    <select id="queryContain" parameterType="String" resultType="CheckGroup">
+        select id,code,name,helpCode,sex,remark,attention from t_checkgroup
+        <if test="value != null and value.length > 0">
+            where code = #{value} or name = #{value} or helpCode = #{value}
+        </if>
+    </select>
+    <!--查询所有的检查项-->
+    <select id="echoById" parameterType="Integer" resultType="Integer">
+        select checkitem_id
+        from t_checkgroup_checkitem
+        where checkgroup_id = #{id}
+    </select>
+    <!--查询所有检查组-->
+    <select id="queryAll" resultType="CheckGroup">
+        select id,code,name,helpCode,sex,remark,attention from t_checkgroup
+    </select>
+    <!--根据套餐的id查询到CheckGroup-->
+    <select id="findCheckGroupById" parameterType="Integer" resultMap="findCheckGroupByIdMap">
+        select id,code,name,helpCode,sex,remark,attention
+        from t_checkgroup
+        where id
+                  in(select checkgroup_id
+                  from t_setmeal_checkgroup
+                  where setmeal_id = #{setmealId})
+    </select>
+    <!--更新检查组-->
+    <update id="updateCheckGroup" parameterType="CheckGroup">
+        update t_checkgroup
+        <set>
+            <if test="code != null">code = #{code},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="helpCode != null">helpCode = #{helpCode},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="attention != null">attention = #{attention},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--清除检查组和检查项的关联-->
+    <delete id="clearAssociation" parameterType="Integer">
+        delete from t_checkgroup_checkitem where checkgroup_id = ${id}
+    </delete>
+    <!--根据id删除检查组-->
+    <delete id="deleteCheckGroup" parameterType="Integer">
+        delete from t_checkgroup where id = ${id}
+    </delete>
+</mapper>

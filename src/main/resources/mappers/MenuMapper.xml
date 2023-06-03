@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.learn.health.mapper.MenuManner">
+    <select id="findAllMidByRid" resultType="Long">
+        select mId from menu_role
+        where rid in 
+        <foreach collection="rids" item="rid" open="(" close=")" separator=",">
+            #{rid}
+        </foreach>
+    </select>
+    <select id="findAllByMid" resultType="Menu">
+        select * from menu
+        where id in
+        <foreach collection="mids" item="mid" open="(" close=")" separator=",">
+            #{mid}
+        </foreach>
+    </select>
+    <select id="getAllByParentId" parameterType="Long" resultType="Menu">
+        select * from menu
+        where parentId = #{id}
+    </select>
+</mapper>

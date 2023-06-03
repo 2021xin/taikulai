@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.learn.health.mapper.OrdersettingManner">
+    <!--批量导入预约设置数据-->
+    <insert id="insert">
+        insert into t_ordersetting
+        <foreach collection="data" item="orderSetting" separator="," open="values">
+            (null,#{orderSetting.orderDate},#{orderSetting.number},#{orderSetting.reservations})
+        </foreach>
+    </insert>
+    <!--根据日期查询数据-->
+    <select id="queryByData" parameterType="Date" resultType="long">
+        select count(id) from t_ordersetting where orderDate = #{orderDate}
+    </select>
+    <!--获取预约数据-->
+    <select id="getOrderData" resultType="OrderSetting">
+        select id,orderDate,number,reservations from t_ordersetting where orderDate between #{begin} and #{end}
+    </select>
+    <!--根据日期查询预约设置信息-->
+    <select id="findByOrderDate" parameterType="date" resultType="OrderSetting">
+        select * from t_ordersetting where orderDate = #{orderDate}
+    </select>
+    <!--更新数据-->
+    <update id="update">
+        <foreach collection="data" item="orderSetting">
+            update t_ordersetting
+            <set>
+                <if test="orderSetting.number != null">number = #{orderSetting.number},</if>
+                <if test="orderSetting.reservations != null">reservations = #{orderSetting.reservations},</if>
+            </set>
+            where orderDate = #{orderSetting.orderDate}
+        </foreach>
+    </update>
+    <!--修改可预约人数-->
+    <update id="updateOrderNumber" parameterType="OrderSetting">
+        update t_ordersetting set number = #{number} where orderDate = #{orderDate}
+    </update>
+    <!--修改预约人数-->
+    <update id="editReservationsByOrderDate" parameterType="OrderSetting">
+        update t_ordersetting set reservations = #{reservations} where orderDate = #{orderDate}
+    </update>
+</mapper>

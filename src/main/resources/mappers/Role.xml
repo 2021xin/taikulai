@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.learn.health.mapper.RoleManner">
+    <select id="findUserById" parameterType="Integer" resultType="Role">
+        select r.*
+        from t_role r,t_user_role ur
+        where r.id = ur.role_id and ur.user_id = #{id};
+    </select>
+    <select id="findRoleByUserId" parameterType="Long" resultType="Role">
+        select id,name,nameZh from role where id in(select rid from user_role where uid = #{id})
+    </select>
+    <select id="findRoleByPermissionId" parameterType="Long" resultType="Role">
+        select id,name,nameZh from role where id in(select rid from permission_role where pid = #{id})
+    </select>
+</mapper>
