@@ -287,6 +287,7 @@
             //向后一个月
             pickNext: function (year, month) {
                 var d = new Date(this.formatDate(year, month, 1));
+                console.log(d)
                 d.setDate(35);////获取指定天之后的日期
                 this.initData(this.formatDate(d.getFullYear(), d.getMonth() + 1, 1));
             },

@@ -2,8 +2,9 @@ package com.learn.health.controller;
 
 import com.learn.health.entity.Menu;
 import com.learn.health.service.MenuService;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,8 +20,8 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
-    @GetMapping("/api/menu")
-    public List<Menu> menu(Authentication authentication) {
-        return menuService.getMenusByCurrentUser(authentication.getName());
-    }
+//    @GetMapping("/api/menu")
+//    public List<Menu> menu(Authentication authentication) {
+//        return menuService.getMenusByCurrentUser(authentication.getName());
+//    }
 }

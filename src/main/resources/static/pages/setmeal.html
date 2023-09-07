@@ -169,7 +169,7 @@
                                             <el-form-item label="上传图片">
                                                 <el-upload
                                                         class="avatar-uploader"
-                                                        action="/setmeal/upload"
+                                                        action="/admin/setmeal/upload"
                                                         :auto-upload="autoUpload"
                                                         name="imgFile"
                                                         :show-file-list="false"
@@ -374,7 +374,8 @@
             //文件上传成功后的钩子，response为服务端返回的值，file为当前上传的文件封装成的js对象
             //response是经过封装过的可以直接调用
             handleAvatarSuccess(response, file) {
-                this.imageUrl = 'http://rmmn33n1g.hn-bkt.clouddn.com/' + response.data;
+                this.imageUrl = 'http://rwyhynwhd.hn-bkt.clouddn.com/' + response.data;
+                console.log(this.imageUrl)
                 this.$message({
                     type: response.flag ? "success" : "error",
                     message: response.message

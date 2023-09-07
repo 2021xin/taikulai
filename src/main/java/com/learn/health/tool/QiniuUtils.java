@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 public class QiniuUtils {
     private static String accessKey = "VbYs3l2cifNorO255UPYshqMCiuKDcdzSzxzS60k";
     private static String secretKey = "qu0AoAR7EawLCq5EyDXwTiIAjZ-dyEoEHg0dn6Rr";
-    private static String bucket = "my-setmeal";
+    private static String bucket = "my-vue3";
 
     // 更改默认accessKey、secretKey、bucket
     public static void setQiniuProperties(String accessKey, String secretKey, String bucket) {

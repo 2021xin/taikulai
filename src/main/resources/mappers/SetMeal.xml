@@ -64,4 +64,24 @@
     <delete id="deleteSetMeal" parameterType="Integer">
         delete from t_setmeal where id = ${id}
     </delete>
+<!--    更新套餐-->
+    <update id="updateSetmeal">
+        update t_setmeal
+        <set>
+            <if test="code != null">code = #{code},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="helpCode != null">helpCode = #{helpCode},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="price != null">price  = #{price},</if>
+            <if test="img != null">img = #{img},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="attention != null">attention = #{attention},</if>
+        </set>
+        where id = #{id}
+    </update>
+<!--    回显检查组ids-->
+    <select id="echoById" parameterType="Integer" resultType="Integer">
+        select checkgroup_id from  t_setmeal_checkgroup where setmeal_id = ${id}
+    </select>
 </mapper>

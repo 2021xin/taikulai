@@ -65,4 +65,17 @@ public interface SetMealManner {
      * @return
      */
     ArrayList<Map<String, Object>> findSetmealCount();
+
+    /**
+     * 更新套餐
+     * @param setmeal
+     */
+    void updateSetmeal(Setmeal setmeal);
+
+    /**
+     * 回显检查组
+     * @param id
+     * @return
+     */
+    List<Integer> echoById(Integer id);
 }

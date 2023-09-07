@@ -7,7 +7,7 @@ import com.learn.health.entity.QueryPageBean;
 import com.learn.health.entity.Result;
 import com.learn.health.service.CheckItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,7 +59,7 @@ public class CheckItemController {
      * @param id
      * @return
      */
-    @PreAuthorize("hasAnyAuthority('CHECKITEM_DELETE')") // 权限验证
+//    @PreAuthorize("hasAnyAuthority('CHECKITEM_DELETE')") // 权限验证
     @RequestMapping("/delete")
     public Result delete(Integer id){
         try {

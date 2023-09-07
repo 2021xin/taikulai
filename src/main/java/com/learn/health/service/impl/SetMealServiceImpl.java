@@ -75,4 +75,21 @@ public class SetMealServiceImpl implements SetMealService {
     public ArrayList<Map<String, Object>> findSetmealCount() {
         return setMealManner.findSetmealCount();
     }
+
+    @Override
+    public void editSetMeal(Setmeal setmeal, Integer[] checkgroupIds) {
+        // 清除检查组和套餐的关联
+        setMealManner.clearAssociation(setmeal.getId());
+        // 修改套餐
+        setMealManner.updateSetmeal(setmeal);
+        // 新增setmeal与checkgroup的多对多关系
+        if (checkgroupIds != null && checkgroupIds.length > 0) {
+            setMealManner.addSetmealCheckgroup(setmeal.getId(), checkgroupIds);
+        }
+    }
+
+    @Override
+    public List<Integer> echoById(Integer id) {
+        return setMealManner.echoById(id);
+    }
 }

@@ -52,4 +52,18 @@ public interface SetMealService {
      * @return
      */
     ArrayList<Map<String, Object>> findSetmealCount();
+
+    /**
+     * 编辑菜单
+     * @param setmeal
+     * @param checkgroupIds
+     */
+    void editSetMeal(Setmeal setmeal, Integer[] checkgroupIds);
+
+    /**
+     * 回显检查组
+     * @param id
+     * @return
+     */
+    List<Integer> echoById(Integer id);
 }

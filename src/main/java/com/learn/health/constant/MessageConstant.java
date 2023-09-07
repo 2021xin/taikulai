@@ -72,4 +72,6 @@ public interface MessageConstant {
     String DELETE_SETMEAL_FAIL = "删除套餐失败";
     String DELETE_SETMEAL_SUCCESS = "删除套餐成功";
     String USER_DOES_NOT_EXIST = "用户不存在";
+    String UPDATE_SETMEAL_FAIL = "更新菜单失败";
+    String UPDATE_SETMEAL_SUCCESS = "更新菜单成功";
 }

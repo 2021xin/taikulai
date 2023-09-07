@@ -6,10 +6,7 @@ import com.learn.health.entity.Result;
 import com.learn.health.service.OrdersettingService;
 import com.learn.health.tool.POIUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -22,6 +19,7 @@ import java.util.Map;
  * @Time 17:25
  * @Author Yan Taixin
  */
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/admin/ordersetting")
 public class OrdersettingController {

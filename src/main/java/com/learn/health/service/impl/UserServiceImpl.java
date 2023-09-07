@@ -4,8 +4,8 @@ import com.learn.health.entity.User;
 import com.learn.health.mapper.UserManner;
 import com.learn.health.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,12 +18,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserManner userManner;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userManner.loadUserByUsername(username);
-        if(user == null) throw new UsernameNotFoundException("用户名不存在！");
-        return user;
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        User user = userManner.loadUserByUsername(username);
+//        if(user == null) throw new UsernameNotFoundException("用户名不存在！");
+//        return user;
+//    }
 
     @Override
     public User checkUser(String username) {

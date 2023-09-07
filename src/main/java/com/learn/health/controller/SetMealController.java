@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -66,6 +67,17 @@ public class SetMealController {
         return new Result(true, MessageConstant.ADD_SETMEAL_SUCCESS);
     }
 
+    @RequestMapping("/admin/setmeal/edit")
+    public Result edit(@RequestBody Setmeal setmeal, Integer[] checkgroupIds){
+        try{
+            setMealService.editSetMeal(setmeal,checkgroupIds);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result(false, MessageConstant.UPDATE_SETMEAL_FAIL);
+        }
+        return new Result(true, MessageConstant.UPDATE_SETMEAL_SUCCESS);
+    }
+
     /**
      * 分页查询
      * @param queryPageBean
@@ -90,5 +102,24 @@ public class SetMealController {
             return new Result(false, MessageConstant.DELETE_SETMEAL_FAIL);
         }
         return new Result(true, MessageConstant.DELETE_SETMEAL_SUCCESS);
+    }
+
+    /**
+     * 回显检查组
+     * @param id
+     * @return
+     */
+    @RequestMapping("/echoById")
+    public Result echoById(Integer id){
+        List<Integer> ids;
+        try {
+            ids = setMealService.echoById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 抛出异常则，查询失败
+            return new Result(false, null);
+        }
+        // 检查组查询成功
+        return new Result(true, null,ids);
     }
 }
